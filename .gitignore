@@ -42,4 +42,4 @@ temp/
 .sass-cache/
 
 # コンパイル済みクラスファイル
-bin/**/*.class
+bin/
