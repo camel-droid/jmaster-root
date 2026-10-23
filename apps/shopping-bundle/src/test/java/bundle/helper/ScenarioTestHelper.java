@@ -10,8 +10,13 @@ public class ScenarioTestHelper {
 	/** テストドライバ */
 	protected static WebDriver driver;
 	
-	/** アプリケーションURL */
+	/** 
+	 * クラス定数
+	 */
+	// アプリケーションURL
 	protected static final String APP_URL = "http://localhost:8080/shopping-bundle";
+	// スリープのインターバル時間：ミリ秒単位
+	protected static final int SLEEP_INTERVAL = 1000;
 	
 	/**
 	 * シナリオテストの前準備：テストドライバを起動

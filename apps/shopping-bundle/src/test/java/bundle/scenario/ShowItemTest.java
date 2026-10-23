@@ -2,10 +2,14 @@ package bundle.scenario;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.sql.PreparedStatement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -15,6 +19,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 import bundle.bean.ItemBean;
+import bundle.helper.DbUnitTestHelper;
 import bundle.helper.ScenarioTestHelper;
 
 class ShowItemTest extends ScenarioTestHelper {
@@ -30,6 +35,105 @@ class ShowItemTest extends ScenarioTestHelper {
 		
 		/** クラス定数 */
 		static final String DISPLAYED_SCREEN_ID = "SCR001";
+		
+		/**
+		 * このテストクラスは追加仕様を実施するためのテストである（追加仕様の内容はlist.jspを参照）。
+		 * このテストクラスのエラーを解消することをもって追加仕様の実装を完了とする。
+		 * このテストクラスを実施する際には@Disabledアノテーションの行をコメントアウトする。
+		 * なお、エラーの解消とはJUnitビュに表示されるレッドバーがグリーンバーになるようにJSPを修正することとする。
+		 */
+		@Disabled
+		@Nested
+		class ForCategoryWithoutItemTest extends DbUnitTestHelper {
+			
+			/** クラス定数 */
+			// SQL文字列定数
+			private static final String SQL_INSERT_INTO_ITEM 
+				= "INSERT INTO item (code, category_code, name, price) VALUES (?, ?, ?, ?)";
+			// テスト用サンプルレコードリスト
+			private List<ItemBean> testItems;		
+			// 復元用サンプルレコードリスト
+			private static final List<ItemBean> restoredItems 
+				= List.of(
+					new ItemBean(1, 1, "Javaの基本", 2500),
+					new ItemBean(2, 1, "MLB Fun", 980),
+					new ItemBean(3, 1, "料理 BOOK!", 1200),
+					new ItemBean(4, 2, "懐かしのアニメシリーズ", 2000),
+					new ItemBean(5, 2, "The Racer", 1000),
+					new ItemBean(6, 2, "Space Wars 3", 1800),
+					new ItemBean(7, 3, "パズルゲーム", 780),
+					new ItemBean(8, 3, "Invader Fighter", 3400),
+					new ItemBean(9, 3, "Play the BasketBall",2200)
+				);
+			
+			@BeforeEach
+			void setUp() throws Exception {
+				OPERATION_INIT("item");
+			}
+			
+			@AfterEach
+			void tearDown() throws Exception {
+				OPERATION_RESTORE("item");
+			}
+			
+			@Override
+			protected void insert() throws Exception {
+				this.insertItems(testItems);
+			}
+			
+			@Override
+			protected void restore() throws Exception {
+				this.insertItems(restoredItems);
+			}
+			
+			/**
+			 * 商品リストをitemテーブルに登録する
+			 * @param  items     登録対象の商品リスト
+			 * @throws Exception レコードの登録に失敗した場合
+			 */
+			private void insertItems(List<ItemBean> items) throws Exception {
+				for (ItemBean item : items) {
+					try (PreparedStatement pstmt = testConnection.prepareStatement(SQL_INSERT_INTO_ITEM);) {
+						pstmt.setInt(1, item.getCode());
+						pstmt.setInt(2, item.getCategoryCode());
+						pstmt.setString(3, item.getName());
+						pstmt.setInt(4, item.getPrice());
+						pstmt.executeUpdate();
+					}
+				}
+			}
+			
+			@Test
+			void 商品が登録されていないカテゴリをクリックすると商品一覧にメッセージが表示されること() throws Exception {
+				// setup
+				String expected = "指定されたカテゴリの商品は見つかりませんでした。";
+				this.prepareTestItems(); // テストデータの登録
+				driver.findElement(By.linkText("DVD")).click(); // 「DVD」カテゴリのリンクをクリック
+				// execute
+				String actual = driver.findElement(By.cssSelector("p.message")).getText();
+				// verify
+				// 画面IDの確認
+				assertEquals("SCR001", driver.findElement(By.tagName("body")).getAttribute("id"));
+				// メッセージの表示確認
+				assertEquals(expected, actual);
+			}
+
+			/**
+			 * テストデータを生成する
+			 * @param  items     テストデータ用の商品リスト
+			 * @throws Exception テストデータ挿入に失敗した場合
+			 */
+			private void prepareTestItems() throws Exception {
+				this.testItems = new ArrayList<>();
+				for (ItemBean bean : restoredItems) {
+					if (bean.getCode() * bean.getCategoryCode() % 2 == 1) {
+						testItems.add(bean);
+					}
+				}
+				// 生成した商品リストをテーブルに挿入
+				this.insert();
+			}
+		}
 		
 		@Nested
 		class ForCategoryWithItemTest {
