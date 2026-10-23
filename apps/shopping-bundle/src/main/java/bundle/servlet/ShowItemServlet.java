@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import bundle.bean.CategoryBean;
+import bundle.bean.ItemBean;
 import bundle.dao.DAOException;
 import bundle.dao.ItemDAO;
 
@@ -51,8 +52,36 @@ public class ShowItemServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String action = request.getParameter("top");
-		String nextURL = "/top.jsp";
+		// リクエストパラメータからactionキーを取得
+		String action = request.getParameter("action");
+		// actionキーによって処理を分岐
+		String nextURL = "";
+		if (action == null || action.isEmpty() || action.equals("top")) {
+			// 1. トップ画面表示
+			nextURL = "/top.jsp";
+		} else if (action.equals("list")) {
+			// 2. カテゴリ別商品表示
+			// 2.1 リクエストパラメータを取得
+			int categoryCode = Integer.parseInt(request.getParameter("code"));
+			
+			try {
+				// 2.2 ItemDAOをインスタンス化
+				ItemDAO dao = new ItemDAO();
+				// 2.3 商品のカテゴリ検索
+				List<ItemBean> list = dao.findByCategory(categoryCode);
+				// 2.4 商品リストをリクエストスコープに登録
+				request.setAttribute("items", list);
+				// 2.4 遷移先URLの設定
+				nextURL = "/list.jsp";
+			} catch (DAOException e) {
+				// スタックトレースに表示
+				e.printStackTrace();
+				// DAO例外をスロー
+				// XXX: 【例外処理について】 研修テキストではメッセージなしだが、本サンプルシステムではメッセージを設定
+				throw new ServletException("内部エラーが発生しました。", e);
+			}
+		}
+		
 		RequestDispatcher dispatcher = request.getRequestDispatcher(nextURL);
 		dispatcher.forward(request, response);
 	}

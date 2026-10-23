@@ -1,0 +1,41 @@
+package bundle.helper;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+public class ScenarioTestHelper {
+
+	/** テストドライバ */
+	protected static WebDriver driver;
+	
+	/** 
+	 * クラス定数
+	 */
+	// アプリケーションURL
+	protected static final String APP_URL = "http://localhost:8080/shopping-bundle";
+	// スリープのインターバル時間：ミリ秒単位
+	protected static final int SLEEP_INTERVAL = 1000;
+	
+	/**
+	 * シナリオテストの前準備：テストドライバを起動
+	 * @throws Exception
+	 */
+	@BeforeAll
+	protected static void setUpBeforeClass() throws Exception {
+		// テストドライバを起動
+		driver = new ChromeDriver();
+	}
+
+	/**
+	 * シナリオテストの後始末
+	 * @throws Exception 
+	 */
+	@AfterAll
+	protected static void tearDownAfterClass() throws Exception {
+		// ブラウザをクローズ
+		driver.quit();
+	}
+	
+}
