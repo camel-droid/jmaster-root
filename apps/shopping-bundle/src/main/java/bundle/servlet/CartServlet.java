@@ -30,7 +30,7 @@ public class CartServlet extends HttpServlet {
 		String action = request.getParameter("action");
 		// actionキーによって処理を分岐
 		String nextURL = "";
-		if (action == null || action.isEmpty()) {
+		if (action == null || action.isEmpty() || action.equals("show")) {
 			// 1. カート画面表示
 			nextURL = "/cart.jsp";
 		} else if (action.equals("add")) {

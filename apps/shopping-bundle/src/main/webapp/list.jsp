@@ -19,7 +19,6 @@
 　　　　　　ヒント：ShowItemTest.DisplayItemListTest.ForCategoryWithoutItemTest.商品が登録されていないカテゴリをクリックすると商品一覧にメッセージが表示されること() メソッドのエラーを解消するようにJSPを修正する
 　　　　　　　　　　条件分岐などのロジックについてはJSTLをキーワードとして調べると幸せになれる
 --%>
-<!-- TODO:【追加課題】 -->
 <c:choose>
 	<c:when test="${empty requestScope.items}">
 		<p class="message">指定されたカテゴリの商品は見つかりませんでした。</p>

@@ -11,7 +11,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import bundle.bean.ItemBean;
-import bundle.dao.ItemDAO;
 import bundle.helper.DbUnitTestHelper;
 
 class ItemDaoTest extends DbUnitTestHelper {

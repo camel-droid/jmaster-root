@@ -14,7 +14,7 @@
 <h3>現在のカートの中身</h3>
 
 <c:if test="${empty cart.items}">
-現在、カートは空です。
+<p class="message">現在、カートは空です。</p><%-- XXX: 研修テキストではタグなしだったので、セマンティックWebを考慮してタグを追記 --%>
 </c:if>
 
 <c:if test="${not empty cart.items}">
