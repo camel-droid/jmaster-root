@@ -62,5 +62,19 @@ public class CartBean {
 		}
 		return null;
 	}
+
+	/**
+	 * カートから指定された商品番号の商品を削除する
+	 * @param target 削除対象の商品の商品コード
+	 */
+	public void deletCart(int target) {
+		for (ItemBean item : this.items) {
+			if (item.getCode() == target) {
+				this.items.remove(item);
+				break;
+			}
+		}
+		
+	}
 	
 }

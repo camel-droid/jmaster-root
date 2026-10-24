@@ -30,7 +30,7 @@
     <td align="right">${item.quantity}</td>
     <td align="right">${item.price * item.quantity}円</td>
 <td>
-<form action="/shopping/CartServlet?action=delete" method="post">
+<form action="<c:url value="/CartServlet?action=delete" />" method="post">
     <input type="hidden" name="item_code" value="${item.code}">
     <button>削除</button>
 </form>

@@ -39,7 +39,7 @@ public class CartServlet extends HttpServlet {
 			HttpSession session = request.getSession();
 			// 2.2 セッションスコープからcartキーを取得
 			CartBean cart = (CartBean) session.getAttribute("cart");
-			// 2.3 cartキー濃霧を検査：cartキーがない場合は新たにカートをセッションに登録
+			// 2.3 cartキーの有無を検査：cartキーがない場合は新たにカートをセッションに登録
 			if (cart == null) {
 				cart = new CartBean();
 				session.setAttribute("cart", cart);
@@ -64,6 +64,28 @@ public class CartServlet extends HttpServlet {
 				// DAO例外をスロー
 				throw new ServletException("内部エラーが発生しました。", e);
 			}
+		} else if (action.equals("delete")) {
+			// 3. カートの商品を削除
+			// 3.1 セッションを取得
+			HttpSession session = request.getSession(false);
+			// 3.2 セッションの有無を検査：セッションがない場合はServletExceptionをスロー
+			if (session == null) {
+				throw new ServletException("セッションが切れています。もう一度トップページから操作してください。");
+			}
+			// 3.3 セッションからカートを取得
+			CartBean cart = (CartBean) session.getAttribute("cart");
+			// 3.4 カートの存在の有無を検査：カートがない場合はServletExceptionをスロー
+			if (cart == null) {
+				throw new ServletException("正しく操作をしてください。");
+			}
+			// 3.5 リクエストパラメータを取得
+			int code = Integer.parseInt(request.getParameter("item_code"));
+			// 3.6 カートから商品を削除
+			cart.deletCart(code);
+			// 3.7 遷移先画面の設定
+			nextURL = "/cart.jsp";
+		} else {
+			throw new ServletException("正しく操作をしてください。");
 		}
 		// 画面遷移
 		RequestDispatcher dispatcher = request.getRequestDispatcher(nextURL);

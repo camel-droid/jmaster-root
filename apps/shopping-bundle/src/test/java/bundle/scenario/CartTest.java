@@ -39,6 +39,49 @@ class CartTest extends ScenarioTestHelper {
 		// 具体的な商品群については bundle.scenario.ItemDaoTestの復元用サンプルレコードリスト参照
 		
 		@Test
+		@Order(6)
+		void カート内の商品を削除できる() {
+			// setup
+			List<ItemBean> expectedList 
+			= List.of(new ItemBean(1, 1, "Javaの基本", 2500, 2), 
+					  new ItemBean(2, 1, "MLB Fun", 980, 4));
+			// 総計額の期待値
+			String expectedTotal = calcTotal(expectedList);
+			
+			// formタグのリストを取得
+			List<WebElement> forms = driver.findElements(By.cssSelector("form"));
+			
+			// ３行目に表示されているセレクトボックスを取得
+			Select select = new Select(forms.get(2).findElement(By.cssSelector("select[name='quantity']")));
+			select.selectByValue("3"); // 数量を選択
+			
+			// ３行目に表示されている商品の［カートに追加］ボタンを取得
+			WebElement button = forms.get(2).findElement(By.cssSelector("input[type='submit'][value='カートに追加']"));
+			button.click(); // ［カートに追加］ボタンをクリック
+			
+			// execute
+			List<WebElement> rows = driver.findElements(By.cssSelector("table tr:not(:first-child):not(:last-child)"));
+			WebElement delButton = rows.get(rows.size()-1).findElement(By.cssSelector("form button"));
+			delButton.click();
+			
+			// verify
+			List<WebElement> actualList = driver.findElements(By.cssSelector("table tr:not(:first-child):not(:last-child)"));
+			assertEquals(expectedList.size(), actualList.size());
+			for (int i = 0; i < expectedList.size(); ++i) {
+				ItemBean expected = expectedList.get(i);
+				List<WebElement> actual = actualList.get(i).findElements(By.tagName("td"));
+				assertEquals(Integer.toString(expected.getCode()), actual.get(0).getText());
+				assertEquals(expected.getName(), actual.get(1).getText());
+				assertEquals(expected.getPrice() + "円", actual.get(2).getText());
+				assertEquals(Integer.toString(expected.getQuantity()), actual.get(3).getText());
+				assertEquals((expected.getPrice() * expected.getQuantity()) + "円", 
+							  actual.get(4).getText());
+			}
+			// 商品の総計額確認
+			assertEquals(expectedTotal, driver.findElement(By.cssSelector("td[colspan='6']")).getText());
+		}
+		
+		@Test
 		@Order(5)
 		void カートに商品が追加された状態でカートを見るリンクをクリックするとカート画面が表示される() {
 			// setup
