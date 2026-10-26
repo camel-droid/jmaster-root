@@ -11,17 +11,25 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 
+import bundle.bean.CustomerBean;
 import bundle.helper.ItemRecordsCreater;
 import bundle.helper.ScenarioTestHelper;
 
 class OrderTest extends ItemRecordsCreater {
 
+	/** クラス定数 */
+	private static final int IDX_SCENARIO_CART     = 1;
+	private static final int IDX_SCENARIO_CUSTOMER = 2;
+	
+	@Nested
+	class OrderedTest extends ScenarioTestHelper {
+		
+		
+		
+	}
+	
 	@Nested
 	class CustomerTest extends ScenarioTestHelper {
-		
-		/** クラス定数 */
-		private static final int IDX_SCENARIO_CART     = 1;
-		private static final int IDX_SCENARIO_CUSTOMER = 2;
 		
 		@BeforeEach
 		void setUp() throws Exception {
@@ -31,20 +39,96 @@ class OrderTest extends ItemRecordsCreater {
 		}
 		
 		@Nested
+		class DisplayConfirmTest {
+			
+			@BeforeEach
+			void setUp() throws Exception {
+				// 商品をカートに追加して［注文する］ボタンをクリックするシナリオの実行
+				clickOrderButton();
+			}
+			
+			@Test
+			void 送付先情報を入力して確認ボタンをクリックすると確認画面が表示されること() throws Exception {
+				// setup：商品をカートに追加して［注文する］ボタンをクリックするシナリオの実行
+				String expected = "SCR004";
+				CustomerBean target = new CustomerBean("鈴木一郎", "東京都渋谷区", "03-3333-2222", "ichiro@abc.com");
+				Thread.sleep(SLEEP_INTERVAL);
+				
+				// execute：送付先情報を入力し［確認する］ボタンをクリックするシナリオの実行
+				List<WebElement> inputs = driver.findElements(By.tagName("input"));
+				for (WebElement input : inputs) {
+					switch (input.getAttribute("name")) {
+					case "name":
+						input.sendKeys(target.getName());
+						break;
+					case "address":
+						input.sendKeys(target.getAddress());
+						break;
+					case "tel":
+						input.sendKeys(target.getPhone());
+						break;
+					case "email":
+						input.sendKeys(target.getEmail());
+						break;
+					default:
+						break;
+					}
+				}
+				// 【確認する】
+				clickConfirmButton();
+				Thread.sleep(SLEEP_INTERVAL);
+				
+				// verify：遷移先の画面IDの確認
+				// 画面IDの表示取得
+				String actual = driver.findElement(By.tagName("body")).getAttribute("id");
+				assertEquals(expected, actual);
+				// 表示内容の表示確認
+				List<WebElement> rows = driver.findElements(By.cssSelector("form table tr"));
+				assertEquals(target.getName(), rows.get(0).findElement(By.cssSelector("td:last-child")).getText());
+				assertEquals(target.getAddress(), rows.get(1).findElement(By.cssSelector("td:last-child")).getText());
+				assertEquals(target.getPhone(), rows.get(2).findElement(By.cssSelector("td:last-child")).getText());
+				assertEquals(target.getEmail(), rows.get(3).findElement(By.cssSelector("td:last-child")).getText());
+				
+			}
+		}
+		
+		@Nested
 		class DisplayCustomerTest {
 			@Test
-			void カート画面で注文するボタンをクリックすると送付先情報入力画面が表示されること() {
+			void カート画面で注文するボタンをクリックすると送付先情報入力画面が表示されること() throws Exception {
 				// setup
 				String expected = "SCR003";
 				// execute
 				// ［注文する］ボタンをクリック
-				List<WebElement> forms = driver.findElements(By.tagName("form"));
-				WebElement orderButton = forms.getLast().findElement(By.tagName("button"));
-				orderButton.click();
+				clickOrderButton();
+				Thread.sleep(SLEEP_INTERVAL);
 				String actual = driver.findElement(By.tagName("body")).getAttribute("id");
 				// verify
 				assertEquals(expected, actual);
 			}
+		}
+		
+		/**
+		 * ［確認する］ボタンのクリックイベントを実行する
+		 */
+		private void clickConfirmButton() {
+			clickButton();
+		}
+		
+		/**
+		 * [注文する]ボタンのクリックイベントを実行する
+		 */
+		private void clickOrderButton() {
+			clickButton();
+		}
+		
+		/**
+		 * ボタンをクリックするイベントを実行する
+		 */
+		private void clickButton() {
+			List<WebElement> forms = driver.findElements(By.tagName("form"));
+			WebElement button = forms.getLast().findElement(By.tagName("button"));
+			button.click();
 		}
 		
 		/**
@@ -87,16 +171,16 @@ class OrderTest extends ItemRecordsCreater {
 			Select select = new Select(forms.get(index).findElement(By.cssSelector("select[name='quantity']")));
 			select.selectByValue(Integer.toString(quantity)); // 数量を選択
 			
-			// １行目に表示されている商品の［カートに追加］ボタンを取得
+			// 対象商品の表示行の［カートに追加］ボタンを取得
 			WebElement addButton = forms.get(index).findElement(By.cssSelector("input[type='submit'][value='カートに追加']"));
 			addButton.click(); // ［カートに追加］ボタンをクリック
-			// 表示確認のためのスリープ
+			// レンダリング完了前の操作を防止するために待機
 			Thread.sleep(SLEEP_INTERVAL / 2);
 		}
 		
 		/**
 		 * 選んだ商品の表示行のインデックスを取得する
-		 * @param  name  選択する種品名
+		 * @param  name  選択する商品名
 		 * @param  forms 商品表示領域（form要素）のリスト
 		 * @return 商品表示行のインデックス
 		 */

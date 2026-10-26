@@ -35,7 +35,7 @@
 
 <h3>お客様情報を入力してください</h3>
 
-<form action="/shopping/OrderServlet?action=confirm" method="post">
+<form action="<c:url value="/OrderServlet?action=confirm" />" method="post">
     <table border="1">
         <tr>
         <td>お名前</td><td><input type="text" name="name"></td>
