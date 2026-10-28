@@ -1,7 +1,20 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-
+<%
+/*
+List<ItemBean> list = List.of(
+					  	new ItemBean(1, 1, "Javaの基本", 2500, 2),
+					  	new ItemBean(2, 1, "MLB Fun", 980, 4),
+					  	new ItemBean(4, 2, "懐かしのアニメシリーズ", 2000, 3)
+					  );
+CartBean cart = new CartBean();
+for (ItemBean item : list) {
+	cart.addCart(item);
+}
+session.setAttribute("cart", cart);
+*/
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -22,7 +35,7 @@
 <tr><td>商品番号</td><td>商品名</td><td>単価(税込)</td>
     <td>個数</td><td>小計</td><td>削除</td></tr>
 
-<c:forEach items="${cart.items}" var="item">
+<c:forEach items="${sessionScope.cart.items}" var="item">
 <tr>
     <td align="center">${item.code}</td>
     <td align="center">${item.name}</td>
@@ -37,10 +50,10 @@
 </td>
 </tr>
 </c:forEach>
-<tr><td align="right" colspan="6">総計：${cart.total}円</td></tr>
+<tr><td align="right" colspan="6">総計：${sessionScope.cart.total}円</td></tr>
 </table>
 
-<form action="/shopping/OrderServlet?action=input_customer" method="post">
+<form action="<c:url value="/OrderServlet?action=input_customer" />" method="post">
     <button>注文する</button>
 </form>
 </c:if>

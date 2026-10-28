@@ -23,7 +23,7 @@ class ItemDaoTest extends DbUnitTestHelper {
 	private static final String SQL_INSERT_INTO_ITEM 
 		= "INSERT INTO item (code, category_code, name, price) VALUES (?, ?, ?, ?)";
 	// テスト用サンプルレコードリスト
-	private List<ItemBean> testItems;		
+	private List<ItemBean> testItems;
 	// 復元用サンプルレコードリスト
 	private static final List<ItemBean> restoredItems 
 		= List.of(
