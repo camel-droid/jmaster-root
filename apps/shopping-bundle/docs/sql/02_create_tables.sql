@@ -47,3 +47,10 @@ CREATE TABLE ordered_detail (
 	item_code INTEGER,
 	quantity INTEGER
 );
+
+-- 認証テーブルの作成：ログイン機能追加に伴って追加（認証はメールアドレスとパスワードによる）
+CREATE TABLE auth (
+	name     TEXT NOT NULL,
+	email    TEXT NOT NULL,
+	password TEXT NOT NULL
+);
