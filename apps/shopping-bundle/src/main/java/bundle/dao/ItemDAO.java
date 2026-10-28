@@ -43,6 +43,7 @@ public class ItemDAO {
 			// スタックトレースに表示
 			e.printStackTrace();
 			// DAO例外をスロー
+			// XXX: 【例外処理について】 研修テキストではメッセージなしだが、本サンプルシステムではメッセージを設定
 			throw new DAOException("JDBCドライバの読込みに失敗しました。", e);
 		}
 	}
@@ -74,6 +75,7 @@ public class ItemDAO {
 			// スタックトレースに表示
 			e.printStackTrace();
 			// DAO例外をスロー
+			// XXX: 【例外処理について】 研修テキストではメッセージなしだが、本サンプルシステムではメッセージを設定
 			throw new DAOException("レコードの取得に失敗しました。", e);
 		}
 		
@@ -112,6 +114,7 @@ public class ItemDAO {
 			// スタックトレースに表示
 			e.printStackTrace();
 			// DAO例外をスロー
+			// XXX: 【例外処理について】 研修テキストではメッセージなしだが、本サンプルシステムではメッセージを設定
 			throw new DAOException("レコードの取得に失敗しました。", e);
 		}
 	}
@@ -148,6 +151,7 @@ public class ItemDAO {
 			// スタックトレースに表示
 			e.printStackTrace();
 			// DAO例外をスロー
+			// XXX: 【例外処理について】 研修テキストではメッセージなしだが、本サンプルシステムではメッセージを設定
 			throw new DAOException("レコードの取得に失敗しました。", e);
 		}
 	}

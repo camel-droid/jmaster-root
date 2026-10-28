@@ -24,18 +24,40 @@ class OrderTest extends ItemRecordsCreater {
 	@Nested
 	class OrderedTest extends ScenarioTestHelper {
 		
-		
-		
-	}
-	
-	@Nested
-	class CustomerTest extends ScenarioTestHelper {
-		
 		@BeforeEach
 		void setUp() throws Exception {
 			// 個々のテストではあらかじめトップページが表示されている状態から開始
 			driver.get(APP_URL);
+			// 商品をカートに追加するシナリオの実行
 			this.prepareSampleCart(IDX_SCENARIO_CUSTOMER);
+		}
+		
+		@Nested
+		class DisplayCompleteTest {
+			
+			@BeforeEach
+			void setUp() throws Exception {
+				// カート画面の［注文する］ボタンをクリックするシナリオの実行
+				clickOrderButton();
+				// 送付先情報を入力して［確認画面へ］ボタンをクリックするシナリオの実行
+				CustomerBean target = new CustomerBean("鈴木一郎", "東京都渋谷区", "03-3333-2222", "ichiro@abc.com");
+				entryCustomer(target);
+				Thread.sleep(SLEEP_INTERVAL);
+				clickOrderButton();
+			}
+			
+			@Test
+			void DisplayComplete() throws InterruptedException {
+				// setup
+				String expected = "SCR005";
+				// execute：［この内容で注文する］ボタンのクリック
+				clickOrderButton();
+				Thread.sleep(SLEEP_INTERVAL);
+				// verify
+				String actual = driver.findElement(By.tagName("body")).getAttribute("id");
+				assertEquals(expected, actual);
+			}
+			
 		}
 		
 		@Nested
@@ -55,26 +77,9 @@ class OrderTest extends ItemRecordsCreater {
 				Thread.sleep(SLEEP_INTERVAL);
 				
 				// execute：送付先情報を入力し［確認する］ボタンをクリックするシナリオの実行
-				List<WebElement> inputs = driver.findElements(By.tagName("input"));
-				for (WebElement input : inputs) {
-					switch (input.getAttribute("name")) {
-					case "name":
-						input.sendKeys(target.getName());
-						break;
-					case "address":
-						input.sendKeys(target.getAddress());
-						break;
-					case "tel":
-						input.sendKeys(target.getPhone());
-						break;
-					case "email":
-						input.sendKeys(target.getEmail());
-						break;
-					default:
-						break;
-					}
-				}
-				// 【確認する】
+				entryCustomer(target);
+				
+				// 【確認する】ボタンをクリック
 				clickConfirmButton();
 				Thread.sleep(SLEEP_INTERVAL);
 				
@@ -90,6 +95,7 @@ class OrderTest extends ItemRecordsCreater {
 				assertEquals(target.getEmail(), rows.get(3).findElement(By.cssSelector("td:last-child")).getText());
 				
 			}
+
 		}
 		
 		@Nested
@@ -152,6 +158,31 @@ class OrderTest extends ItemRecordsCreater {
 			
 		}
 		
+		/**
+		 * 送付先情報を入力する
+		 * @param target 送付先情報を保持する顧客インスタンス
+		 */
+		private void entryCustomer(CustomerBean target) {
+			List<WebElement> inputs = driver.findElements(By.tagName("input"));
+			for (WebElement input : inputs) {
+				switch (input.getAttribute("name")) {
+				case "name":
+					input.sendKeys(target.getName());
+					break;
+				case "address":
+					input.sendKeys(target.getAddress());
+					break;
+				case "tel":
+					input.sendKeys(target.getPhone());
+					break;
+				case "email":
+					input.sendKeys(target.getEmail());
+					break;
+				default:
+					break;
+				}
+			}
+		}
 		/**
 		 * カートに商品を追加する
 		 * @param linkText   メニュリンクの表示文字列
