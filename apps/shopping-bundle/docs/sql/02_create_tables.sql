@@ -7,6 +7,7 @@ DROP TABLE IF EXISTS item CASCADE;
 DROP TABLE IF EXISTS customer CASCADE;
 DROP TABLE IF EXISTS ordered CASCADE;
 DROP TABLE IF EXISTS ordered_detail CASCADE;
+DROP TABLE IF EXISTS account CASCADE;
 
 -- 各テーブルの生成
 
@@ -46,4 +47,12 @@ CREATE TABLE ordered_detail (
 	ordered_code SERIAL NOT NULL,
 	item_code INTEGER,
 	quantity INTEGER
+);
+
+-- 認証テーブルの作成：ログイン機能追加に伴って追加（認証はメールアドレスとパスワードによる）
+CREATE TABLE account (
+	id       INTEGER  NOT NULL,
+	name     TEXT NOT NULL,
+	email    TEXT NOT NULL,
+	password TEXT NOT NULL
 );
