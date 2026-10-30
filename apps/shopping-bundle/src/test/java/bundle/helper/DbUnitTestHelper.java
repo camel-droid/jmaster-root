@@ -24,7 +24,7 @@ public abstract class DbUnitTestHelper {
 	protected static Connection testConnection;
 	
 	@BeforeAll
-	protected static void setUpBeforeClass() throws Exception {
+	static void setUpBeforeClass() throws Exception {
 		// JDBCドライバの読込み
 		Class.forName(JDBC_DRIVER);
 		// テストデータ投入用データベース接続オブジェクトの取得

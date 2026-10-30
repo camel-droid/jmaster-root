@@ -29,7 +29,7 @@ class ShowItemTest extends ScenarioTestHelper {
 		// 個々のテストではあらかじめトップページが表示されている状態から開始
 		driver.get(APP_URL);
 	}
-
+	
 	@Nested
 	class DisplayItemListTest {
 		
@@ -258,6 +258,23 @@ class ShowItemTest extends ScenarioTestHelper {
 			assertEquals(DISPLAYED_SCREEN_ID, actual);
 		}
 		
+	}
+
+	/**
+	 * 画面IDを取得する
+	 * @return 画面ID
+	 */
+	public String getScreenId() {
+		return this.getIdAtt("body");
+	}
+	
+	/**
+	 * 指定されたセレクタのid属性を取得する
+	 * @param  target 取得対象となるCSSセレクタ
+	 * @return id属性値
+	 */
+	public String getIdAtt(String target) {
+		return driver.findElement(By.cssSelector(target)).getAttribute("id");
 	}
 
 }

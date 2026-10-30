@@ -2,6 +2,7 @@ package bundle.helper;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 
@@ -38,4 +39,21 @@ public class ScenarioTestHelper {
 		driver.quit();
 	}
 	
+	/**
+	 * 画面IDを取得する
+	 * @return 画面ID
+	 */
+	protected String getScreenId() {
+		return this.getIdAtt("body");
+	}
+	
+	/**
+	 * 指定されたセレクタのid属性を取得する
+	 * @param  target 取得対象となるCSSセレクタ
+	 * @return id属性値
+	 */
+	protected String getIdAtt(String target) {
+		return driver.findElement(By.cssSelector(target)).getAttribute("id");
+	}
+
 }
