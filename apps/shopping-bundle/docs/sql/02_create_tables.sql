@@ -51,6 +51,7 @@ CREATE TABLE ordered_detail (
 
 -- 認証テーブルの作成：ログイン機能追加に伴って追加（認証はメールアドレスとパスワードによる）
 CREATE TABLE account (
+	id       INTEGER  NOT NULL,
 	name     TEXT NOT NULL,
 	email    TEXT NOT NULL,
 	password TEXT NOT NULL

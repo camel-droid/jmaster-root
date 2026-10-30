@@ -18,7 +18,7 @@ public class AuthDbTestHelper extends DbUnitTestHelper {
 	private static final String SQL_INSERT_INTO_CUSTOMER 
 		= "INSERT INTO customer (code, name, address, tel, email) VALUES (?, ?, ?, ?, ?)";
 	private static final String SQL_INSERT_INTO_AUTH 
-		= "INSERT INTO account (name, email, password) VALUES (?, ?, ?)";
+		= "INSERT INTO account (id, name, email, password) VALUES (?, ?, ?, ?)";
 	// テスト用customerテーブルサンプルレコードリスト
 	protected static List<CustomerBean> testCustomers;
 	// テスト用accountテーブルサンプルレコードリスト
@@ -72,9 +72,10 @@ public class AuthDbTestHelper extends DbUnitTestHelper {
 	private void insertAccounts(List<AccountBean> testAccounts) throws Exception {
 		for (AccountBean account : testAccounts) {
 			try (PreparedStatement pstmt = testConnection.prepareStatement(SQL_INSERT_INTO_AUTH)) {
-				pstmt.setString(1, account.getName());
-				pstmt.setString(2, account.getEmail());
-				pstmt.setString(3, account.getPassword());
+				pstmt.setInt(1, account.getId());
+				pstmt.setString(2, account.getName());
+				pstmt.setString(3, account.getEmail());
+				pstmt.setString(4, account.getPassword());
 				pstmt.executeUpdate();
 			}
 		}
